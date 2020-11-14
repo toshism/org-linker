@@ -4,7 +4,7 @@
 
 ;; Author: tosh <tosh.lyons@gmail.com>
 ;; Version: 0.1
-;; Package-Requires: (org helm-org-ql)
+;; Package-Requires: (org org-ql)
 ;; URL: https://github.com/toshism/org-linker
 ;; Keywords: convenience, hypermedia
 
