@@ -31,8 +31,17 @@
 
 (require 'helm-org-ql)
 
+(defgroup org-linker nil
+  "FIXME: Link things in orgmode")
+
 (defvar org-linker-to-heading nil)
 
+(defcustom org-linker-buffer-function #'org-agenda-files
+  "Function used to get a list of Org files or buffers.
+
+Each item can be either a file name or a buffer, since `org-ql'
+accepts any of both."
+  :type 'function)
 
 (defun org-linker-buffer-mode (&optional buffer-or-name)
   "Return the major mode associated with a buffer.
@@ -42,15 +51,19 @@ If BUFFER-OR-NAME is nil return current buffer's mode."
 
 
 (defun org-linker-get-search-buffers ()
-  "Return the buffers to provide to `helm-org-ql`.
-If the current buffer is an `org-mode` buffer add it to `org-agenda-files`.
-Else just return `org-agenda-files`"
+  "Return a list of buffers to provide to `helm-org-ql`.
+
+This is defined by `org-linker-buffer-function', and it defaults
+to `org-agenda-files'.
+
+If the current buffer is in `org-mode', it is also prepended to
+the list."
   ;; this needs to add the buffer you were on before opening a capture
   ;; template too (if it's an org mode file)
-  (if (and (string= (org-linker-buffer-mode) "org-mode") (buffer-file-name))
-      (cons (buffer-file-name) (org-agenda-files))
-    (org-agenda-files)))
-
+  (append (when (and (derived-mode-p 'org-mode)
+                     (buffer-file-name))
+            (list (current-buffer)))
+          (funcall org-linker-buffer-function)))
 
 (defun org-linker-search-interface (callback)
   "Setup the helm-org-ql search interface.
