@@ -4,7 +4,7 @@
 
 ;; Author: tosh <tosh.lyons@gmail.com>
 ;; Version: 0.1
-;; Package-Requires: (org helm-org-ql)
+;; Package-Requires: (org org-ql helm)
 ;; URL: https://github.com/toshism/org-linker
 ;; Keywords: convenience, hypermedia
 
@@ -33,6 +33,12 @@
 
 (defgroup org-linker nil
   "FIXME: Link things in orgmode")
+
+;; Silence byte compiler
+(declare-function helm "ext:helm")
+(declare-function helm-org-ql-source "ext:helm-org-ql")
+(defvar helm-input-idle-delay)
+(defvar helm-org-ql-input-idle-delay)
 
 (defvar org-linker-to-heading nil)
 
@@ -68,10 +74,14 @@ the list."
 (defun org-linker-search-interface (callback)
   "Setup the helm-org-ql search interface.
 Call CALLBACK with a marker to target heading."
-  (add-to-list 'helm-org-ql-actions (cons "super-link-temp" callback) nil)
-  (helm-org-ql (org-linker-get-search-buffers))
-  (pop helm-org-ql-actions))
-
+  (let* ((boolean 'and)
+         (helm-input-idle-delay helm-org-ql-input-idle-delay)
+         (source (helm-org-ql-source (org-linker-get-search-buffers)
+                                     :name "org-linker target")))
+    ;; You'll need a better action name here
+    (setcdr (assoc 'action source) callback)
+    (helm :prompt (format "Query (boolean %s): " (upcase (symbol-name boolean)))
+          :sources source)))
 
 (defun org-linker-callback-wrapper (callback m)
   "Call user provided CALLBACK with source marker and target marker M.
