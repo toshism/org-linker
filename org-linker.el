@@ -38,6 +38,8 @@
 ;; Silence byte compiler
 (declare-function helm "ext:helm")
 (declare-function helm-org-ql-source "ext:helm-org-ql")
+(declare-function org-agenda-files "ext:org")
+(declare-function org-back-to-heading "ext:org")
 (defvar helm-input-idle-delay)
 (defvar helm-org-ql-input-idle-delay)
 
