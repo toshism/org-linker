@@ -82,7 +82,6 @@ Call CALLBACK with a marker to target heading."
          (helm-input-idle-delay helm-org-ql-input-idle-delay)
          (source (helm-org-ql-source (org-linker-get-search-buffers)
                                      :name "org-linker target")))
-    ;; You'll need a better action name here
     (setcdr (assoc 'action source) callback)
     (helm :prompt (format "Query (boolean %s): " (upcase (symbol-name boolean)))
           :sources source)))
