@@ -99,6 +99,7 @@ Call the user callback with target marker (M) and source marker."
       (funcall callback source target))))
 
 
+;;;###autoload
 (defun org-linker (callback)
   "Call CALLBACK function with two markers.
 CALLBACK should be a function that accepts two arguments SOURCE and
