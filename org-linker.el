@@ -32,7 +32,10 @@
 (require 'helm-org-ql)
 
 (defgroup org-linker nil
-  "FIXME: Link things in orgmode")
+  "Link things in Org mode"
+  :group 'outlines
+  :group 'convenience
+  :group 'org)
 
 ;; Silence byte compiler
 (declare-function helm "ext:helm")
