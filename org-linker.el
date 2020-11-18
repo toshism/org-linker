@@ -29,8 +29,6 @@
 
 ;;; Code:
 
-(require 'helm-org-ql)
-
 (defgroup org-linker nil
   "Link things in Org mode"
   :group 'outlines
@@ -77,6 +75,7 @@ the list."
 (defun org-linker-search-interface (callback)
   "Setup the helm-org-ql search interface.
 Call CALLBACK with a marker to target heading."
+  (require 'helm-org-ql)
   (let* ((boolean 'and)
          (helm-input-idle-delay helm-org-ql-input-idle-delay)
          (source (helm-org-ql-source (org-linker-get-search-buffers)
