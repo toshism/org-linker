@@ -4,7 +4,7 @@
 
 ;; Author: tosh <tosh.lyons@gmail.com>
 ;; Version: 0.1
-;; Package-Requires: (org helm-org-ql)
+;; Package-Requires: ((emacs "24.1") org org-ql helm-org)
 ;; URL: https://github.com/toshism/org-linker
 ;; Keywords: convenience, hypermedia
 
@@ -29,10 +29,19 @@
 
 ;;; Code:
 
-(require 'helm-org-ql)
-
 (defgroup org-linker nil
-  "FIXME: Link things in orgmode")
+  "Link things in Org mode"
+  :group 'outlines
+  :group 'convenience
+  :group 'org)
+
+;; Silence byte compiler
+(declare-function helm "ext:helm")
+(declare-function helm-org-ql-source "ext:helm-org-ql")
+(declare-function org-agenda-files "ext:org")
+(declare-function org-back-to-heading "ext:org")
+(defvar helm-input-idle-delay)
+(defvar helm-org-ql-input-idle-delay)
 
 (defvar org-linker-to-heading nil)
 
@@ -68,10 +77,14 @@ the list."
 (defun org-linker-search-interface (callback)
   "Setup the helm-org-ql search interface.
 Call CALLBACK with a marker to target heading."
-  (add-to-list 'helm-org-ql-actions (cons "super-link-temp" callback) nil)
-  (helm-org-ql (org-linker-get-search-buffers))
-  (pop helm-org-ql-actions))
-
+  (require 'helm-org-ql)
+  (let* ((boolean 'and)
+         (helm-input-idle-delay helm-org-ql-input-idle-delay)
+         (source (helm-org-ql-source (org-linker-get-search-buffers)
+                                     :name "org-linker target")))
+    (setcdr (assoc 'action source) callback)
+    (helm :prompt (format "Query (boolean %s): " (upcase (symbol-name boolean)))
+          :sources source)))
 
 (defun org-linker-callback-wrapper (callback m)
   "Call user provided CALLBACK with source marker and target marker M.
@@ -85,6 +98,7 @@ Call the user callback with target marker (M) and source marker."
       (funcall callback source target))))
 
 
+;;;###autoload
 (defun org-linker (callback)
   "Call CALLBACK function with two markers.
 CALLBACK should be a function that accepts two arguments SOURCE and
