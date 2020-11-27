@@ -1,0 +1,11 @@
+* org-linker
+
+This is a utility package to serve as a base for linking org headings in various ways.
+
+The idea is just to have a base package that provides a standard interface for building any type of functionality that works with a relationship between two headings.
+
+It was originally extracted from an (aborted) rewrite of [[https://github.com/toshism/org-super-links][org-super-links]]. (it still exists and works on the [[https://github.com/toshism/org-super-links/tree/org-linker-refactor][org-linker-refactor]] branch if you are curious) and has since been used to build [[https://github.com/toshism/org-linker-edna][org-linker-edna]]. If you build something on top of it let me know and I will link it here as well.
+
+You provide a callback function to =org-linker= and it will call that function with two markers. One in the heading where =org-linker= was called (=SOURCE=), and one in the heading of the selected target heading (=TARGET=). Then you can do whatever with those two markers.
+
+The heavy lifting is done by [[https://github.com/alphapapa/org-ql][org-ql]] via =helm-org-ql=.
